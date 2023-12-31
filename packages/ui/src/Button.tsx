@@ -1,4 +1,5 @@
-import { PropsWithChildren } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
+
 import styled from 'styled-components'
 
 const StyledButton = styled.button`
@@ -8,6 +9,11 @@ const StyledButton = styled.button`
 	color: #fae5df;
 `
 
-export const Button = ({ children }: PropsWithChildren) => (
-	<StyledButton>{children}</StyledButton>
+interface Props {
+	children: ReactNode
+	onClick?: MouseEventHandler<HTMLButtonElement>
+}
+
+export const Button = ({ children, onClick }: Props) => (
+	<StyledButton onClick={onClick}> {children}</StyledButton>
 )
