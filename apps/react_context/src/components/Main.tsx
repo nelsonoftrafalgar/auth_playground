@@ -41,7 +41,7 @@ export const Main = () => {
 	const color = data?.includes('granted') ? '#2cd08b' : '#f65436'
 
 	return (
-		<Card>
+		<Card data-testid='main'>
 			<Header color={color}>{data}</Header>
 			<Button onClick={handleGetData}>Get Data</Button>
 			<Button onClick={handleLogout}>LOGOUT</Button>

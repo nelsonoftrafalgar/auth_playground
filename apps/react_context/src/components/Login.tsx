@@ -34,7 +34,7 @@ export const Login = () => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
+		<form data-testid='loginForm' onSubmit={handleSubmit(onSubmit)}>
 			<Card>
 				<Input
 					{...register('login')}
