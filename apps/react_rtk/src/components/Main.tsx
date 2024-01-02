@@ -1,41 +1,23 @@
+import { useAppDispatch, useAppSelector } from '../store/store'
+
 import { Button } from '@repo/ui/Button'
 import { Card } from '@repo/ui/Card'
 import { Header } from '@repo/ui/Header'
-import { isAxiosError } from 'axios'
-import { useAuth } from '../auth/Auth'
-import { useClient } from '../http/useClient'
+import { getData } from '../store/data.thunk'
+import { logout } from '../store/auth.thunk'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 
 export const Main = () => {
-	const { setAccessToken } = useAuth()
+	const dispatch = useAppDispatch()
+	const { data } = useAppSelector(({ data }) => data)
 	const navigate = useNavigate()
-	const client = useClient()
-
-	const [data, setData] = useState<string | null>(null)
 
 	const handleLogout = async () => {
-		try {
-			await client.get('/logout')
-			setAccessToken(null)
-			navigate('/login', { replace: true })
-		} catch (error) {
-			setAccessToken(null)
-			navigate('/login', { replace: true })
-		}
+		dispatch(logout()).finally(() => navigate('/login', { replace: true }))
 	}
 
 	const handleGetData = async () => {
-		try {
-			const {
-				data: { message }
-			} = await client.get('/data')
-			setData(message)
-		} catch (error) {
-			if (isAxiosError(error)) {
-				setData(error.response?.data.message)
-			}
-		}
+		dispatch(getData())
 	}
 
 	const color = data?.includes('granted') ? '#2cd08b' : '#f65436'

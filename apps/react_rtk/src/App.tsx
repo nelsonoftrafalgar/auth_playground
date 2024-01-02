@@ -1,10 +1,11 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
-import { AuthProvider } from './auth/Auth'
 import { Login } from './components/Login'
 import { Main } from './components/Main'
 import { PersistAuth } from './components/PersistAuth'
 import ProtectedRoute from './components/ProtectedRoute'
+import { Provider } from 'react-redux'
+import { store } from './store/store'
 
 const router = createBrowserRouter([
 	{
@@ -22,8 +23,8 @@ const router = createBrowserRouter([
 
 export const App = () => {
 	return (
-		<AuthProvider>
+		<Provider store={store}>
 			<RouterProvider router={router} />
-		</AuthProvider>
+		</Provider>
 	)
 }

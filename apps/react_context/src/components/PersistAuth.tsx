@@ -11,7 +11,7 @@ export const PersistAuth = ({ children }: PropsWithChildren) => {
 		if (!accessToken) {
 			refreshToken()
 		}
-	}, [accessToken, refreshToken])
+	}, [])
 
 	if (!accessToken) {
 		return <p>Loading...</p>

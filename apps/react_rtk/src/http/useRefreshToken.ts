@@ -1,21 +1,20 @@
-import { client } from './client'
-import { useAuth } from '../auth/Auth'
+import { clearAccessToken, setAccessToken } from '../store/auth.slice'
+
+import { refresh } from '../store/auth.thunk'
+import { useAppDispatch } from '../store/store'
 import { useNavigate } from 'react-router-dom'
 
 export const useRefreshToken = () => {
-	const { setAccessToken } = useAuth()
 	const navigate = useNavigate()
+	const dispatch = useAppDispatch()
 
 	const refreshToken = async () => {
 		try {
-			const {
-				data: { accessToken }
-			} = await client.get('/refresh')
-			setAccessToken(accessToken)
-			return accessToken
-		} catch (error) {
+			const { accessToken } = await dispatch(refresh()).unwrap()
+			dispatch(setAccessToken(accessToken))
+		} catch {
+			dispatch(clearAccessToken())
 			navigate('/login', { replace: true })
-			return null
 		}
 	}
 	return refreshToken
