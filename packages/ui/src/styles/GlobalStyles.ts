@@ -8,8 +8,7 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  #root {
-    height: 100%;
+  #root, #__next {
     display: flex;
     justify-content: center;
     align-items: center;
