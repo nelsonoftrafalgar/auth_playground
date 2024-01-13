@@ -6,7 +6,7 @@ import { useLazyLogoutQuery } from '../store/auth.slice'
 import { useNavigate } from 'react-router-dom'
 
 export const Main = () => {
-	const [getData, { data }] = useLazyGetDataQuery()
+	const [getData, { data, isError: isDataError }] = useLazyGetDataQuery()
 	const [logout, { isError, isSuccess }] = useLazyLogoutQuery()
 	const navigate = useNavigate()
 
@@ -18,7 +18,7 @@ export const Main = () => {
 		getData()
 	}
 
-	if (isError || isSuccess) navigate('/login', { replace: true })
+	if (isError || isSuccess || isDataError) navigate('/login', { replace: true })
 
 	const color = data?.message.includes('granted') ? '#2cd08b' : '#f65436'
 

@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../store/store'
 import { Button } from '@repo/ui/Button'
 import { Card } from '@repo/ui/Card'
 import { Header } from '@repo/ui/Header'
+import { clearAccessToken } from '../store/auth.slice'
 import { getData } from '../store/data.thunk'
 import { logout } from '../store/auth.thunk'
 import { useNavigate } from 'react-router-dom'
@@ -17,7 +18,12 @@ export const Main = () => {
 	}
 
 	const handleGetData = async () => {
-		dispatch(getData())
+		try {
+			await dispatch(getData()).unwrap()
+		} catch {
+			dispatch(clearAccessToken())
+			navigate('/login', { replace: true })
+		}
 	}
 
 	const color = data?.includes('granted') ? '#2cd08b' : '#f65436'

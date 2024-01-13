@@ -31,21 +31,21 @@ const baseQueryWithRefresh = async (
 	let result = await baseQuery(args, api, extraOptions)
 
 	if (result.error?.status === 403) {
-		const {
-			data: { accessToken }
-		} = (await baseQuery(
-			{
-				url: '/refresh',
-				method: 'GET',
-				credentials: 'include'
-			},
-			api,
-			extraOptions
-		)) as AxiosResponse<RefreshResponse>
-		if (accessToken) {
+		try {
+			const {
+				data: { accessToken }
+			} = (await baseQuery(
+				{
+					url: '/refresh',
+					method: 'GET',
+					credentials: 'include'
+				},
+				api,
+				extraOptions
+			)) as AxiosResponse<RefreshResponse>
 			api.dispatch(setAccessToken(accessToken))
 			result = await baseQuery(args, api, extraOptions)
-		} else {
+		} catch {
 			api.dispatch(clearAccessToken())
 		}
 	}

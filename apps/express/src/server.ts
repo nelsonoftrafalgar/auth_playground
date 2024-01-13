@@ -30,11 +30,11 @@ app.post('/login', (req, res) => {
 	const refreshToken = jwt.sign(
 		{ login },
 		process.env.REFRESH_TOKEN_SECRET as Secret,
-		{ expiresIn: '10m' }
+		{ expiresIn: '15s' }
 	)
 	res.cookie('refreshToken', refreshToken, {
 		httpOnly: true,
-		maxAge: 10 * 60 * 1000
+		maxAge: 15 * 1000
 	})
 	res.json({ accessToken })
 })

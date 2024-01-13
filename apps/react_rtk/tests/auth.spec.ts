@@ -146,4 +146,24 @@ test.describe('As a logged in user', () => {
 		await page.waitForURL('/login')
 		await expect(page.getByTestId('loginForm')).toBeInViewport()
 	})
+
+	test('when the refresh token expires I am redirected to /login page', async ({
+		page
+	}) => {
+		await page.route('**/data', (route) => {
+			route.fulfill({
+				status: 403
+			})
+		})
+
+		await page.route('**/refresh', (route) => {
+			route.fulfill({
+				status: 401
+			})
+		})
+
+		await page.getByRole('button', { name: 'Get Data' }).click()
+		await page.waitForURL('/login')
+		await expect(page.getByTestId('loginForm')).toBeVisible()
+	})
 })
