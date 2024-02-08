@@ -34,7 +34,6 @@ client.interceptors.response.use(
 				return client(prevRequest)
 			} catch {
 				Cookies.remove('accessToken')
-				Cookies.remove('refreshToken')
 			}
 		}
 		return Promise.reject(error)

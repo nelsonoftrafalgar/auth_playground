@@ -1,7 +1,6 @@
 import { Button } from '@repo/ui/Button'
 import { Card } from '@repo/ui/Card'
 import { Input } from '@repo/ui/Input'
-// import axios from 'axios'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
@@ -9,10 +8,6 @@ import { useRouter } from 'next/router'
 interface LoginFormData {
 	login: string
 	password: string
-}
-
-interface LoginResponse {
-	accessToken: string
 }
 
 const Login = () => {

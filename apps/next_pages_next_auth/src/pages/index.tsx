@@ -1,11 +1,11 @@
 import axios, { isAxiosError } from 'axios'
+import { getSession, signOut } from 'next-auth/react'
 
 import { Button } from '@repo/ui/Button'
 import { Card } from '@repo/ui/Card'
 import { GetServerSideProps } from 'next'
 import { Header } from '@repo/ui/Header'
 import client from '@/http/client'
-import { getSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
@@ -20,7 +20,7 @@ const Home = ({ message }: Props) => {
 	const handleLogout = async () => {
 		try {
 			await axios.get('api/logout')
-			router.replace('/login')
+			signOut({ callbackUrl: '/login' })
 		} catch (error) {
 			router.replace('/login')
 		}
@@ -37,7 +37,7 @@ const Home = ({ message }: Props) => {
 				isAxiosError(error) &&
 				(error.response?.status === 401 || error.response?.status === 403)
 			) {
-				router.replace('/login')
+				signOut({ callbackUrl: '/login' })
 			}
 		}
 	}
@@ -73,7 +73,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			props: { message }
 		}
 	} catch (error) {
-		console.error('Error fetching data')
 		if (isAxiosError(error)) {
 			return {
 				props: { message: error?.response?.data.message ?? null }
