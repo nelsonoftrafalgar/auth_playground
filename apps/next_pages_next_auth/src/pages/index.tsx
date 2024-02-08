@@ -1,5 +1,5 @@
 import axios, { isAxiosError } from 'axios'
-import { getSession, signOut } from 'next-auth/react'
+import { getSession, signOut, useSession } from 'next-auth/react'
 
 import { Button } from '@repo/ui/Button'
 import { Card } from '@repo/ui/Card'
@@ -14,6 +14,7 @@ interface Props {
 }
 
 const Home = ({ message }: Props) => {
+	const { data: session } = useSession()
 	const [data, setData] = useState<string | null>(() => message ?? null)
 
 	const router = useRouter()
@@ -30,7 +31,9 @@ const Home = ({ message }: Props) => {
 		try {
 			const {
 				data: { message }
-			} = await client.get('/data')
+			} = await client.get('/data', {
+				headers: { Authorization: `Bearer ${session?.accessToken}` }
+			})
 			setData(message)
 		} catch (error) {
 			if (

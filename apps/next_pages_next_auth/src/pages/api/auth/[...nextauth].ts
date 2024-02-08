@@ -3,8 +3,12 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 
 import CredentialsProvider from 'next-auth/providers/credentials'
 import client from '@/http/client'
+import { refreshToken } from '@/http/refreshToken'
 
-export const nextAuthOptions = (res: NextApiResponse): NextAuthOptions => {
+export const nextAuthOptions = (
+	req: NextApiRequest,
+	res: NextApiResponse
+): NextAuthOptions => {
 	return {
 		session: {
 			strategy: 'jwt'
@@ -24,14 +28,7 @@ export const nextAuthOptions = (res: NextApiResponse): NextAuthOptions => {
 						})
 
 						Object.keys(headers).forEach((key) => {
-							if (key === 'set-cookie') {
-								res.setHeader(key, [
-									...headers[key]!,
-									`accessToken=${data.accessToken}; Max-Age=10; Path=/;`
-								])
-							} else {
-								res.setHeader(key, headers[key])
-							}
+							res.setHeader(key, headers[key])
 						})
 
 						const user = { id: 'userId', accessToken: data.accessToken }
@@ -50,12 +47,15 @@ export const nextAuthOptions = (res: NextApiResponse): NextAuthOptions => {
 			signIn: '/login'
 		},
 		callbacks: {
-			async jwt({ token, user }) {
-				if (user) {
-					token.accessToken = user.accessToken
+			async jwt({ token, user, account }) {
+				if (user && account) {
+					return {
+						...token,
+						accessToken: user.accessToken
+					}
 				}
 
-				return token
+				return await refreshToken(token, req)
 			},
 			async session({ session, token }) {
 				session.accessToken = token.accessToken
@@ -66,5 +66,5 @@ export const nextAuthOptions = (res: NextApiResponse): NextAuthOptions => {
 }
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
-	return NextAuth(req, res, nextAuthOptions(res))
+	return NextAuth(req, res, nextAuthOptions(req, res))
 }
