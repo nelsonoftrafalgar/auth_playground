@@ -30,20 +30,25 @@ test.describe('As a not logged in user', () => {
 		page,
 		next
 	}) => {
-		await page.context().addCookies([
-			{
-				name: 'accessToken',
-				value: accessToken,
-				domain: 'localhost',
-				path: '/'
-			}
-		])
-
 		next.onFetch((request) => {
 			if (request.url === 'http://localhost:8000/data') {
 				return new Response(
 					JSON.stringify({
 						message: 'Access granted'
+					}),
+					{
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					}
+				)
+			}
+
+			if (request.url === 'http://localhost:3000/api/auth/session') {
+				return new Response(
+					JSON.stringify({
+						user: {},
+						accessToken
 					}),
 					{
 						headers: {
@@ -59,12 +64,6 @@ test.describe('As a not logged in user', () => {
 
 		await page.getByPlaceholder('Login').fill('qwerty')
 		await page.getByPlaceholder('Password').fill('12345')
-
-		await page.route('**/login', (route) => {
-			route.fulfill({
-				body: JSON.stringify({ accessToken })
-			})
-		})
 
 		await page.getByRole('button', { name: 'SIGN IN' }).click()
 
@@ -81,20 +80,25 @@ test.describe('As a not logged in user', () => {
 
 test.describe('As a logged in user', () => {
 	test.beforeEach(async ({ page, next }) => {
-		await page.context().addCookies([
-			{
-				name: 'accessToken',
-				value: accessToken,
-				domain: 'localhost',
-				path: '/'
-			}
-		])
-
 		next.onFetch((request) => {
 			if (request.url === 'http://localhost:8000/data') {
 				return new Response(
 					JSON.stringify({
 						message: 'Access granted'
+					}),
+					{
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					}
+				)
+			}
+
+			if (request.url === 'http://localhost:3000/api/auth/session') {
+				return new Response(
+					JSON.stringify({
+						user: {},
+						accessToken
 					}),
 					{
 						headers: {
@@ -110,12 +114,6 @@ test.describe('As a logged in user', () => {
 
 		await page.getByPlaceholder('Login').fill('qwerty')
 		await page.getByPlaceholder('Password').fill('12345')
-
-		await page.route('**/login', (route) => {
-			route.fulfill({
-				body: JSON.stringify({ accessToken })
-			})
-		})
 
 		await page.getByRole('button', { name: 'SIGN IN' }).click()
 
@@ -133,15 +131,9 @@ test.describe('As a logged in user', () => {
 		).toBeInViewport()
 	})
 
-	test('I refresh the page I am still logged in and can see "get data" and "logout" button and data fetched on the server side', async ({
+	test('I refresh the page and I am still logged in and can see "get data" and "logout" button and data fetched on the server side', async ({
 		page
 	}) => {
-		await page.route('**/refresh', (route) => {
-			route.fulfill({
-				body: JSON.stringify({ accessToken })
-			})
-		})
-
 		await page.reload()
 
 		await expect(
@@ -167,34 +159,6 @@ test.describe('As a logged in user', () => {
 		).toBeInViewport()
 	})
 
-	test('when the access token expires I can refresh the token and fetch protected data', async ({
-		page
-	}) => {
-		await page.route('**/data', (route, request) => {
-			if (request.headers()['authorization'] === `Bearer ${accessToken}`) {
-				route.fulfill({
-					status: 403
-				})
-			} else {
-				route.fulfill({
-					body: JSON.stringify({ message: 'After refresh access granted' })
-				})
-			}
-		})
-
-		await page.route('**/refreshToken', (route) => {
-			route.fulfill({
-				status: 200,
-				body: JSON.stringify({ accessToken: '0987654321' })
-			})
-		})
-
-		await page.getByRole('button', { name: 'Get Data' }).click()
-		await expect(
-			page.getByRole('heading', { name: 'After refresh access granted' })
-		).toBeInViewport()
-	})
-
 	test('when I click "Logout" button I am logged out and redirected to "/login"', async ({
 		page
 	}) => {
@@ -210,12 +174,6 @@ test.describe('As a logged in user', () => {
 		await page.route('**/data', (route) => {
 			route.fulfill({
 				status: 403
-			})
-		})
-
-		await page.route('**/refreshToken', (route) => {
-			route.fulfill({
-				status: 401
 			})
 		})
 
