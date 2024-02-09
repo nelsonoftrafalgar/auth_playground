@@ -1,3 +1,5 @@
+'use client'
+
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyles = createGlobalStyle`
@@ -8,7 +10,7 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  #root, #__next {
+  #root, #__next, #next-app-body {
     display: flex;
     justify-content: center;
     align-items: center;
