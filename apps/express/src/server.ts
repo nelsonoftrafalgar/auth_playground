@@ -74,7 +74,7 @@ app.get('/data', (req, res) => {
 
 	jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as Secret, (error) => {
 		if (error) {
-			res.status(403).json({ message: 'Access denied' })
+			return res.status(403).json({ message: 'Access denied' })
 		}
 		res.status(200).json({ message: 'Access granted' })
 	})

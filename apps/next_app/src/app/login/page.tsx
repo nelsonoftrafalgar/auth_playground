@@ -5,8 +5,9 @@ import { Card } from '@repo/ui/Card'
 import { Input } from '@repo/ui/Input'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
-interface LoginFormData {
+export interface LoginFormData {
 	login: string
 	password: string
 }
@@ -16,12 +17,15 @@ interface LoginResponse {
 }
 export default function Login() {
 	const { handleSubmit, register } = useForm<LoginFormData>()
+	const router = useRouter()
 
 	const onSubmit = async (data: LoginFormData) => {
 		try {
-			await axios.post<LoginResponse>('api/login', data)
-			// router.replace('/')
-		} catch {}
+			await axios.post('api/auth/login', data)
+			router.replace('/')
+		} catch {
+			console.log('Login error')
+		}
 	}
 	return (
 		<form data-testid='loginForm' onSubmit={handleSubmit(onSubmit)}>
