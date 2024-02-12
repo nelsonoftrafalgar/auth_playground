@@ -39,11 +39,8 @@ export async function login(formData: LoginFormData) {
 			httpOnly: true,
 			maxAge: 15
 		})
-
-		// redirect('/')
 	} catch (error) {
 		console.log('login handler error')
-		// return new Response('Error', { status: 500 })
 	}
-	return ''
+	return
 }

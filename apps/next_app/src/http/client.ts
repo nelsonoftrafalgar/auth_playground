@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 const client = axios.create({
 	baseURL: 'http://localhost:8000',

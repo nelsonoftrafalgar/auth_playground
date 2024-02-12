@@ -29,7 +29,7 @@ test.describe('As a not logged in user', () => {
 		await page.context().addCookies([
 			{
 				name: 'accessToken',
-				value: 'accessToken',
+				value: accessToken,
 				domain: 'localhost',
 				path: '/'
 			}
@@ -234,17 +234,6 @@ test.describe('As a logged in user', () => {
 
 			return 'abort'
 		})
-		// await page.route('**/data', (route) => {
-		// 	route.fulfill({
-		// 		status: 403
-		// 	})
-		// })
-
-		// await page.route('**/refreshToken', (route) => {
-		// 	route.fulfill({
-		// 		status: 401
-		// 	})
-		// })
 
 		await page.getByRole('button', { name: 'Get Data' }).click()
 		await page.waitForURL('/login')
