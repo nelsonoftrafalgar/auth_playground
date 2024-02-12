@@ -47,7 +47,7 @@ app.get('/logout', (_, res) => {
 app.get('/refresh', (req, res) => {
 	const { refreshToken } = req.cookies
 
-	if (!refreshToken) res.sendStatus(401)
+	if (!refreshToken) return res.sendStatus(401)
 
 	jwt.verify(
 		refreshToken,

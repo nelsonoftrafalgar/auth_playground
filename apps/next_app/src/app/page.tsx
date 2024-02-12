@@ -1,7 +1,7 @@
 import { Home } from '@/components/Home'
-import { getData } from './actions/actions'
+import { getDataServer } from './actions/actions'
 
 export default async function Page() {
-	const message = await getData()
+	const message = await getDataServer()
 	return <Home message={message} />
 }

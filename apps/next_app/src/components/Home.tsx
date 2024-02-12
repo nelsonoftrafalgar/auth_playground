@@ -1,6 +1,6 @@
 'use client'
 
-import { getData, logout } from '@/app/actions/actions'
+import { getDataClient, logout } from '@/app/actions/actions'
 
 import { Button } from '@repo/ui/Button'
 import { Card } from '@repo/ui/Card'
@@ -19,7 +19,7 @@ export const Home = ({ message }: Props) => {
 
 	const handleGetData = async () => {
 		try {
-			const data = await getData()
+			const data = await getDataClient()
 			setData(data)
 		} catch {
 			router.replace('/login')
@@ -28,6 +28,7 @@ export const Home = ({ message }: Props) => {
 
 	const handleLogout = async () => {
 		await logout()
+		router.replace('/login')
 	}
 
 	return (
