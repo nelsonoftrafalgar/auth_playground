@@ -1,13 +1,12 @@
 import { JWT } from 'next-auth'
-import { NextApiRequest } from 'next'
 import axios from 'axios'
 
-export const refreshToken = async (token: JWT, req: NextApiRequest) => {
+export const refreshToken = async (token: JWT) => {
 	try {
 		const {
 			data: { accessToken }
 		} = await axios.get('http://localhost:8000/refresh', {
-			headers: req.headers
+			headers: { Cookie: token.refreshToken }
 		})
 
 		return {
