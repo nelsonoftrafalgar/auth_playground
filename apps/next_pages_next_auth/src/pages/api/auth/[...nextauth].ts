@@ -8,6 +8,7 @@ export const nextAuthOptions: NextAuthOptions = {
 	session: {
 		strategy: 'jwt'
 	},
+	secret: 'secret',
 	providers: [
 		CredentialsProvider({
 			name: 'Credentials',
@@ -21,8 +22,6 @@ export const nextAuthOptions: NextAuthOptions = {
 						login: credentials?.login,
 						password: credentials?.password
 					})
-
-					console.log('headers: ', headers)
 
 					const user = {
 						id: 'userId',
